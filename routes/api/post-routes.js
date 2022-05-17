@@ -7,7 +7,13 @@ router.get('/', (req, res) => {
   console.log('========================');
   Post.findAll({
     // Query config
-    attributes: ['id', 'post_url', 'title', 'created_at'],
+    attributes: [
+      'id', 'post_url', 'title', 'created_at',
+      [
+        sequelize.literal('(select count(*) from vote where post.id = vote.post_id)'),
+        'vote_count'
+      ]
+    ],
     order: [['created_at', 'DESC']],
     include: [
       {
@@ -29,7 +35,13 @@ router.get('/:id', (req, res) => {
     where: {
       id: req.params.id
     },
-    attributes: ['id', 'post_url', 'title', 'created_at'],
+    attributes: [
+      'id', 'post_url', 'title', 'created_at',
+      [
+        sequelize.literal('(select count(*) from vote where post.id = vote.post_id)'),
+        'vote_count'
+      ]
+    ],
     include: [
       {
         model: User,
@@ -67,26 +79,33 @@ router.post('/', (req, res) => {
 
 // PUT /api/posts/upvote
 router.put('/upvote', (req, res) => {
-  Vote.create({
-    user_id: req.body.user_id,
-    post_id: req.body.post_id
-  })
-    .then(() => {
-      return Post.findOne({
-        where: {
-          id: req.body.post_id
-        },
-        attributes: [
-          'id', 'post_url', 'title', 'created_at',
-          [
-            sequelize.literal('(select count(*) from vote where post.id = vote.post_id)'),
-            'vote_count'
-          ]
-        ]
-      })
-      .then(dbPostData => res.json(dbPostData))
-      .catch(err => res.json(err));
-    })
+  Post.upvote(req.body, { Vote })
+    .then(updatedPostData => res.json(updatedPostData))
+    .catch(err => {
+      console.error(err);
+      res.status(400).json(err);
+    });
+
+  // Vote.create({
+  //   user_id: req.body.user_id,
+  //   post_id: req.body.post_id
+  // })
+  //   .then(() => {
+  //     return Post.findOne({
+  //       where: {
+  //         id: req.body.post_id
+  //       },
+  //       attributes: [
+  //         'id', 'post_url', 'title', 'created_at',
+  //         [
+  //           sequelize.literal('(select count(*) from vote where post.id = vote.post_id)'),
+  //           'vote_count'
+  //         ]
+  //       ]
+  //     })
+  //     .then(dbPostData => res.json(dbPostData))
+  //     .catch(err => res.json(err));
+  //   })
 });
 
 // update post title
