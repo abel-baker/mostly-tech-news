@@ -2,8 +2,6 @@ const express = require('express');
 const routes = require('./routes');
 
 require('dotenv').config();
-global.console.log('hello');
-global.console.log(`user: ${process.env.DB_USER}`);
 
 const sequelize = require('./config/connection');
 
