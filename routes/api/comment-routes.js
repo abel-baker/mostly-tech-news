@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { debugPort } = require('process');
-const { Comment } = require('../../models');
+const { User, Post, Comment } = require('../../models');
 
 router.get('/', (req, res) => {
   Comment.findAll({
