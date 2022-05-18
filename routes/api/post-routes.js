@@ -85,27 +85,6 @@ router.put('/upvote', (req, res) => {
       console.error(err);
       res.status(400).json(err);
     });
-
-  // Vote.create({
-  //   user_id: req.body.user_id,
-  //   post_id: req.body.post_id
-  // })
-  //   .then(() => {
-  //     return Post.findOne({
-  //       where: {
-  //         id: req.body.post_id
-  //       },
-  //       attributes: [
-  //         'id', 'post_url', 'title', 'created_at',
-  //         [
-  //           sequelize.literal('(select count(*) from vote where post.id = vote.post_id)'),
-  //           'vote_count'
-  //         ]
-  //       ]
-  //     })
-  //     .then(dbPostData => res.json(dbPostData))
-  //     .catch(err => res.json(err));
-  //   })
 });
 
 // update post title
