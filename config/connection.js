@@ -1,4 +1,4 @@
-const { SequelizeScopeError } = require('sequelize');
+const { Sequelize } = require('sequelize');
 
 let sequelize;
 
